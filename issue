@@ -1,0 +1,90 @@
+--
+--  |     _)       
+--   _ \  |    _ \ 
+-- _.__/ _| \___/ 
+--                
+
+
+function init()
+  notes = {}
+  selected = {}
+  -- build a scale, clear selected notes
+  for m = 1,4 do
+    notes[m] = {}
+    selected[m] = {}
+  end
+  light = 0
+  number = 3
+end
+
+function redraw()
+  screen.clear()
+  screen.level(10)
+    for m = 1,4 do
+    for n = 1,4 do
+      screen.circle(m*8,n*8,3)
+      l = 2
+      if selected[m][n] == 1 then
+        l = l + 5 + light
+      end
+      screen.level(l)
+      screen.fill()
+      screen.stroke()
+    end
+  end
+    screen.move(45,27)
+    screen.font_size(35)
+    screen.text(number)
+    screen.font_size(8)
+    screen.move(38,35)
+    screen.text("Max Rnd")
+  screen.update()
+end
+
+function key(n,z)
+  if n == 2 and z == 1 then
+    -- clear selected
+    for x=1,4 do
+      for y=1,4 do
+        selected[x][y] = 0
+      end
+    end
+    -- choose new random notes
+    for i=1,number do
+      selected[math.random(4)][math.random(4)] = 1
+    end
+  elseif n == 3 then
+    -- find notes to play
+    if z == 1 then
+      for x=1,4 do
+        for y=1,4 do
+          if selected[x][y] == 1 then
+          end
+        end
+      end
+      light = 7
+    else
+      light = 0
+      number = math.random(16)
+        -- clear selected
+        for x=1,4 do
+        for y=1,4 do
+        selected[x][y] = 0
+         end
+       end
+    -- choose new random notes
+      for i=1,number do
+      selected[math.random(4)][math.random(4)] = 1
+      end
+    end
+  end
+  redraw()
+end
+
+function enc(n,d)
+  if n==3 then
+    -- clamp number of notes (random select) from 1 to 16
+    number = math.min(16,(math.max(number + d,1)))
+  end
+  redraw()
+end
